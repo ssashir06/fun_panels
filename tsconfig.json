@@ -23,7 +23,8 @@
     "tests/**/*.ts",
     "tests/**/*.tsx",
     "eslint.config.js",
-    "vite.config.js"
+    "vite.config.js",
+    "declarations.d.ts"
   ],
   "exclude": ["node_modules"]
 }
