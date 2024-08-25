@@ -1,3 +1,6 @@
 {
-  "recommendations": []
+  "recommendations": [
+    "rvest.vs-code-prettier-eslint",
+    "esbenp.prettier-vscode"
+  ]
 }
