@@ -1,3 +1,5 @@
+import './UserPage.css';
+
 import React, { useEffect,useState } from 'react';
 
 const UserPage: React.FC = () => {

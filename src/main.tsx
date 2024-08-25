@@ -2,10 +2,11 @@ import './index.css';
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import App from './App';
-import UserPage from './components/UserPage/UserPage';
+import LeftSideMenu from './components/LeftSideMenu';
+import App from './pages/App';
+import UserPage from './pages/UserPage/UserPage';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
@@ -13,14 +14,13 @@ const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     <Router>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/user">User Page</Link>
-      </nav>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/user" element={<UserPage />} />
-      </Routes>
+      <LeftSideMenu />
+      <div className="main-content">
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/user" element={<UserPage />} />
+        </Routes>
+      </div>
     </Router>
   </React.StrictMode>
 );
