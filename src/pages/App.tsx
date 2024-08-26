@@ -1,12 +1,20 @@
-import './App.css';
 
 import React from 'react';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+`;
 
 const App: React.FC = () => {
   return (
-    <div>
-      <div>Fun panels</div>
-    </div>
+    <Container>
+      Fun panels
+    </Container>
   );
 };
 
