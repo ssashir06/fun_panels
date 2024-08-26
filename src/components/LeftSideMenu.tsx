@@ -25,6 +25,7 @@ const LeftSideMenu: React.FC = () => {
     <Nav>
       <Link to="/">Home</Link>
       <Link to="/user">User Page</Link>
+      <Link to="/clock">Clock Page</Link>
     </Nav>
   );
 };
