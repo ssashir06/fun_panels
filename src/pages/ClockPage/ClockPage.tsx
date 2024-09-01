@@ -9,7 +9,7 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const Row = styled.div`
+const Row = styled.div<{ style?: React.CSSProperties }>`
   display: flex;
   flex-direction: row;
 `;
@@ -76,12 +76,23 @@ const UserPage: React.FC = () => {
     setIsMoving(false);
   };
 
+  const speakTime = (time: Date, lang: Intl.LocalesArgument) => () => {
+    const options: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
+    const localizedTime = time.toLocaleTimeString(lang, options);
+    const speech = new SpeechSynthesisUtterance(localizedTime);
+    speech.lang = lang?.toString() || 'en-US';
+    speechSynthesis.speak(speech);
+    console.log(localizedTime);
+  };
+
   return (
     <>
       <Container>
-        <Row>
+        <Row style={{fontSize: 30}}>
           { time.toLocaleTimeString() }
           { time.getHours() > 6 && time.getHours() < 18 ? '🌞' : '🌙' }
+          <button onClick={speakTime(time, 'ja-JP')}>しゃべる</button>
+          <button onClick={speakTime(time, 'en-US')}>Speak</button>
         </Row>
         <Row>
           <AnalogClock time={time} />
