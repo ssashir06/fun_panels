@@ -6,9 +6,9 @@ import LeftSideMenu from '~/components/LeftSideMenu';
 import UserNamePrompt from '~/components/UserNamePrompt';
 import { UserNameProvider } from '~/hooks/UserNameContext';
 import useUserName from '~/hooks/useUserName';
-import ClockPage from '~/pages/ClockPage/ClockPage';
+import ClockPage from '~/pages/ClockPage';
 import HomePage from '~/pages/HomePage';
-import UserPage from '~/pages/UserPage/UserPage';
+import UserPage from '~/pages/UserPage';
 
 const Container = styled.div`
   display: flex;
