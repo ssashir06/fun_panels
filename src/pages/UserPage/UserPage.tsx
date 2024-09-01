@@ -1,6 +1,6 @@
 import React from 'react';
 
-import UserNamePrompt from '../../components/UserNamePrompt';
+import UserNamePrompt from '~/components/UserNamePrompt';
 
 const UserPage: React.FC = () => {
   return (

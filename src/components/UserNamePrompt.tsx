@@ -1,7 +1,6 @@
-// UserNamePrompt.tsx
 import React, { useState } from 'react';
 
-import useUserName from '../hooks/useUserName';
+import useUserName from '~/hooks/useUserName';
 
 const UserNamePrompt: React.FC = () => {
   const { userName, setUserName } = useUserName();

@@ -2,13 +2,13 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 
-import LeftSideMenu from './components/LeftSideMenu';
-import UserNamePrompt from './components/UserNamePrompt';
-import { UserNameProvider } from './hooks/UserNameContext';
-import useUserName from './hooks/useUserName';
-import ClockPage from './pages/ClockPage/ClockPage';
-import HomePage from './pages/HomePage';
-import UserPage from './pages/UserPage/UserPage';
+import LeftSideMenu from '~/components/LeftSideMenu';
+import UserNamePrompt from '~/components/UserNamePrompt';
+import { UserNameProvider } from '~/hooks/UserNameContext';
+import useUserName from '~/hooks/useUserName';
+import ClockPage from '~/pages/ClockPage/ClockPage';
+import HomePage from '~/pages/HomePage';
+import UserPage from '~/pages/UserPage/UserPage';
 
 const Container = styled.div`
   display: flex;
