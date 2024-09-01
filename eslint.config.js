@@ -11,7 +11,7 @@ import globals from 'globals';
 export default [
   { ignores: ['dist'] },
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['**/*.{js,jsx}', '*.js'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -44,7 +44,7 @@ export default [
     },
   },
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx}', '*.ts'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
