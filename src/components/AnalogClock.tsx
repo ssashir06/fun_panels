@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-const AnalogClock: React.FC = () => {
-  const [time, setTime] = useState(new Date());
+interface AnalogClockProps {
+  time: Date;
+}
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
+const AnalogClock: React.FC<AnalogClockProps> = ({ time }) => {
   const getRotationDegrees = (unit: number, max: number) => (unit / max) * 360 + 90;
 
   const secondsDegrees = getRotationDegrees(time.getSeconds(), 60);
