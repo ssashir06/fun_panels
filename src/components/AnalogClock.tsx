@@ -8,8 +8,8 @@ const AnalogClock: React.FC<AnalogClockProps> = ({ time }) => {
   const getRotationDegrees = (unit: number, max: number) => (unit / max) * 360 + 90;
 
   const secondsDegrees = getRotationDegrees(time.getSeconds(), 60);
-  const minutesDegrees = getRotationDegrees(time.getMinutes(), 60);
-  const hoursDegrees = getRotationDegrees(time.getHours() % 12, 12);
+  const minutesDegrees = getRotationDegrees(time.getMinutes() + time.getSeconds() / 60, 60);
+  const hoursDegrees = getRotationDegrees(time.getHours() % 12 + time.getMinutes() / 60 + time.getSeconds() / 60 / 60, 12);
 
   return (
     <div style={styles.clock}>
