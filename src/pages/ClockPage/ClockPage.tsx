@@ -79,8 +79,13 @@ const UserPage: React.FC = () => {
   return (
     <>
       <Container>
-        {time.toLocaleTimeString()}
-        <AnalogClock time={time} />
+        <Row>
+          { time.toLocaleTimeString() }
+          { time.getHours() > 6 && time.getHours() < 18 ? '🌞' : '🌙' }
+        </Row>
+        <Row>
+          <AnalogClock time={time} />
+        </Row>
       </Container>
       <Container>
         <Row>
