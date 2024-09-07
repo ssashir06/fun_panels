@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import LeftSideMenu from '~/components/LeftSideMenu';
 import UserNamePrompt from '~/components/UserNamePrompt';
+import { viteEnv } from '~/config/viteConfigs';
 import { UserNameProvider } from '~/hooks/UserNameContext';
 import useUserName from '~/hooks/useUserName';
 import ClockPage from '~/pages/ClockPage';
@@ -11,7 +12,7 @@ import HomePage from '~/pages/HomePage';
 import KanaPage from '~/pages/KanaPage';
 import UserPage from '~/pages/UserPage';
 
-const baseUrl = import.meta.env.BASE_URL;
+const baseUrl = viteEnv.BASE_URL;
 
 const Container = styled.div`
   display: flex;
