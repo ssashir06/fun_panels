@@ -8,6 +8,7 @@ import { UserNameProvider } from '~/hooks/UserNameContext';
 import useUserName from '~/hooks/useUserName';
 import ClockPage from '~/pages/ClockPage';
 import HomePage from '~/pages/HomePage';
+import KanaPage from '~/pages/KanaPage';
 import UserPage from '~/pages/UserPage';
 
 const Container = styled.div`
@@ -57,6 +58,8 @@ const App: React.FC = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/user" element={<UserPage />} />
             <Route path="/clock" element={<ClockPage />} />
+            <Route path="/kana" element={<KanaPage />} />
+            <Route path="*" element={<div>Not Found</div>} />
           </Routes>
         </RightPanel>
       </Container>
