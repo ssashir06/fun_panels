@@ -11,6 +11,8 @@ import HomePage from '~/pages/HomePage';
 import KanaPage from '~/pages/KanaPage';
 import UserPage from '~/pages/UserPage';
 
+const baseUrl = import.meta.env.BASE_URL;
+
 const Container = styled.div`
   display: flex;
   height: 100vh;
@@ -48,7 +50,7 @@ const App: React.FC = () => {
   const { userName } = useUserName();
 
   return (
-    <Router>
+    <Router basename={baseUrl}>
       <Container>
         <LeftPanel>
           <LeftSideMenu />
