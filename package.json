@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://ssashir06.github.io/fun_panels/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build-gh-pages": "vite build --base=/fun_panels/",
     "lint": "eslint . --fix",
     "preview": "vite preview"
   },
