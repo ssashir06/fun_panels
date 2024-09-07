@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -10,9 +11,14 @@ const Container = styled.div`
 
 const HomePage: React.FC = () => {
   return (
-    <Container>
-      Fun panels
-    </Container>
+    <>
+      <Helmet>
+        <title>Fun panels home</title>
+      </Helmet>
+      <Container>
+        Fun panels
+      </Container>
+    </>
   );
 };
 

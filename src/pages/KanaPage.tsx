@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 
 import KanaCard from '~/components/KanaCard';
@@ -74,19 +75,24 @@ const KanaPage: React.FC = () => {
       ['ん', 'n'],]
   ];
   return (
-    <Container>
-      <Row>
-        {
-          kana.map((row, i) => (
-            <Column key={i}>
-              {
-                row.map(([kana, romaji], j) => <KanaCard key={j} kana={kana} romaji={romaji} />)
-              }
-            </Column>
-          ))
-        }
-      </Row>
-    </Container>
+    <>
+      <Helmet>
+        <title>Kana</title>
+      </Helmet>
+      <Container>
+        <Row>
+          {
+            kana.map((row, i) => (
+              <Column key={i}>
+                {
+                  row.map(([kana, romaji], j) => <KanaCard key={j} kana={kana} romaji={romaji} />)
+                }
+              </Column>
+            ))
+          }
+        </Row>
+      </Container>
+    </>
   );
 };
 

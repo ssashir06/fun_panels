@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 
 import AnalogClock from '~/components/AnalogClock';
@@ -87,6 +88,9 @@ const UserPage: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Clock</title>
+      </Helmet>
       <Container>
         <Row style={{fontSize: 30}}>
           { time.toLocaleTimeString() }
