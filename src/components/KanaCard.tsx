@@ -11,6 +11,8 @@ const Card = styled.div`
   border: 1px solid black;
   margin: 5px;
   padding: 5px;
+  transition: background-color 1s;
+  background-color: white;
 `;
 
 const Letter = styled.div`
@@ -27,8 +29,22 @@ interface KanaCardProps {
 };
 
 const KanaCard: React.FC<KanaCardProps> = ({ kana, romaji }) => {
+  const handleSpeak = (ev: React.MouseEvent<HTMLDivElement>) => {
+    if (kana) {
+      const utterance = new SpeechSynthesisUtterance(`${kana}!`);
+      utterance.lang = 'ja-JP';
+      speechSynthesis.speak(utterance);
+
+      const cardElement = ev.currentTarget;
+      cardElement.style.backgroundColor = 'orange';
+      setTimeout(() => {
+        cardElement.style.backgroundColor = 'white';
+      }, 1000);
+    }
+  };
+
   return (
-    <Card>
+    <Card onClick={handleSpeak}>
       { kana && <Letter>{kana}</Letter> }
       { romaji && <Romaji>{romaji}</Romaji> }
     </Card>
