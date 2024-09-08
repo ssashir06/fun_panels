@@ -6,6 +6,12 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     height: 100%;
     font-family: Arial, sans-serif;
+
+    // Disable text selection
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE 10+/Edge */
+    user-select: none; /* Standard syntax */
   }
 `;
 
