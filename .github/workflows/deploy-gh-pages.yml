@@ -25,7 +25,8 @@ jobs:
       run: npm install
 
     - name: Build project
-      run: -|
+      run: |
+        set -e
         npm run build-gh-pages
         cp dist/index.html dist/404.html
 
