@@ -13,11 +13,23 @@ const Container = styled.div`
 const Row = styled.div`
   display: flex;
   flex-direction: row;
+  margin: 1em;
 `;
 
 const ShapeWrapper = styled.div<{ isVisible: boolean }>`
   opacity: ${props => (props.isVisible ? 1 : 0)};
   transition: opacity 0.5s ease-in-out;
+  margin: 0.5em;
+`;
+
+const AddButton = styled.button`
+  font-size: 2rem; /* Large font size */
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 const ColorShapesPage: React.FC = () => {
@@ -46,18 +58,18 @@ const ColorShapesPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Color home</title>
+        <title>Color and Shapes</title>
       </Helmet>
       <Container>
+        <Row>
+          <AddButton onClick={handleAdd}>+</AddButton>
+        </Row>
         <Row>
           {shapes.map((shape, index) => (
             <ShapeWrapper key={index} isVisible={visibleShapes.includes(shape)}>
               <ColorfulShape {...shape} onClick={(ev) => handleRemove(ev, shape)} />
             </ShapeWrapper>
           ))}
-        </Row>
-        <Row>
-          <button onClick={handleAdd}>+</button>
         </Row>
       </Container>
     </>
