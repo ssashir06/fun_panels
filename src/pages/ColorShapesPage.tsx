@@ -33,14 +33,21 @@ const AddButton = styled.button`
 `;
 
 const ColorShapesPage: React.FC = () => {
-  const [shapes, setShapes] = useState<ColorfulShapeProps[]>([]);
-  const [visibleShapes, setVisibleShapes] = useState<ColorfulShapeProps[]>([]);
+  interface EnhancedColorfulShapeProps extends ColorfulShapeProps {
+    id: number;
+  };
+
+  const [shapes, setShapes] = useState<EnhancedColorfulShapeProps[]>([]);
+  const [visibleShapes, setVisibleShapes] = useState<EnhancedColorfulShapeProps[]>([]);
 
   const handleAdd = () => {
     const all = ['red', 'green', 'blue'].map(color => (
       ['circle', 'square', 'triangle'].map(type => ({ type, color } as ColorfulShapeProps))
     )).flat();
-    const newShape: ColorfulShapeProps = all[Math.floor(Math.random() * all.length)];
+    const newShape: EnhancedColorfulShapeProps = {
+      ...all[Math.floor(Math.random() * all.length)],
+      id: Date.now() * 1000 + Math.floor(Math.random() * 1000),
+    };
     setShapes([...shapes, newShape]);
     setTimeout(() => {
       setVisibleShapes([...shapes, newShape]);
@@ -65,8 +72,8 @@ const ColorShapesPage: React.FC = () => {
           <AddButton onClick={handleAdd}>+</AddButton>
         </Row>
         <Row>
-          {shapes.map((shape, index) => (
-            <ShapeWrapper key={index} isVisible={visibleShapes.includes(shape)}>
+          {shapes.map((shape) => (
+            <ShapeWrapper key={shape.id} isVisible={visibleShapes.includes(shape)}>
               <ColorfulShape {...shape} onClick={(ev) => handleRemove(ev, shape)} />
             </ShapeWrapper>
           ))}
