@@ -130,7 +130,7 @@ const ColorShapesPage: React.FC = () => {
         <Row>
           {shapes.map((shape) => (
             <ShapeWrapper key={shape.id} isVisible={visibleShapes.includes(shape)}>
-              <ColorfulShape {...shape} onClick={(ev) => handleRemove(ev, shape)} />
+              <ColorfulShape {...shape} onClick={(ev) => !isMoving && handleRemove(ev, shape)} />
             </ShapeWrapper>
           ))}
         </Row>
