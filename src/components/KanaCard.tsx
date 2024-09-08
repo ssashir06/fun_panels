@@ -33,7 +33,7 @@ const KanaCard: React.FC<KanaCardProps> = ({ kana, romaji }) => {
     if (!kana) { 
       return;
     }
-    const text = kana === 'は' ? 'ハ' :
+    const text = kana === 'は' ? '歯' :
                  kana === 'ん' ? 'んん' :
                  kana;
     const utterance = new SpeechSynthesisUtterance(`「${text}」`);
