@@ -13,26 +13,33 @@ const Container = styled.div`
 const Row = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   margin: 1em;
 `;
 
 const ShapeWrapper = styled.div<{ isVisible: boolean }>`
   opacity: ${props => (props.isVisible ? 1 : 0)};
   transform: ${props => (props.isVisible ? 'scaleX(1)' : 'scaleX(0)')};
+  width: ${props => (props.isVisible ? '100px' : '0')};
+  margin-left: ${props => (props.isVisible ? '0.5em' : '0')};
+  margin-right: ${props => (props.isVisible ? '0.5em' : '0')};
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
   transform-origin: center;
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-  margin: 0.5em;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out, width 0.5s ease-in-out, margin-left 0.5s ease-in-out, margin-right 0.5s ease-in-out;
   overflow: hidden; /* Ensure content is hidden when width is 0 */
 `;
 
-const AddButton = styled.button`
+const AddButton = styled.button<{ enabled: boolean }>`
   font-size: 2rem; /* Large font size */
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  background-color: gray;
+  color: black;
+  border: 2px solid ${props => (props.enabled ? 'black' : 'gray')};
+  border-radius: 10px;
   cursor: pointer;
+  width: 2em;
+  height: 2em;
 `;
 
 const ColorShapesPage: React.FC = () => {
@@ -60,6 +67,7 @@ const ColorShapesPage: React.FC = () => {
 
   const [shapes, setShapes] = useState<EnhancedColorfulShapeProps[]>([]);
   const [visibleShapes, setVisibleShapes] = useState<EnhancedColorfulShapeProps[]>([]);
+  const [isMoving, setIsMoving] = useState(false);
 
   const speak = (shape: ColorfulShapeProps, lang: 'ja-JP') => {
     const text = languageMapping[lang]?.find(s => s.type === shape.type && s.color === shape.color)?.speak;
@@ -77,7 +85,14 @@ const ColorShapesPage: React.FC = () => {
       ...allColorfulShapes[Math.floor(Math.random() * allColorfulShapes.length)],
       id: Date.now() * 1000 + Math.floor(Math.random() * 1000),
     };
-    setShapes([newShape, ...shapes]);
+
+    // Mark as moving 1500ms
+    setIsMoving(true);
+    setTimeout(() => {
+      setIsMoving(false);
+    }, 1500);
+
+    setShapes([...shapes, newShape]);
     setTimeout(() => {
       setVisibleShapes([...shapes, newShape]);
     }, 10); // Short delay to trigger the fade-in animation
@@ -86,6 +101,13 @@ const ColorShapesPage: React.FC = () => {
 
   const handleRemove = (ev: React.MouseEvent<HTMLDivElement, MouseEvent>, shape: ColorfulShapeProps) => {
     ev.stopPropagation();
+    
+    // Mark as moving 1500ms
+    setIsMoving(true);
+    setTimeout(() => {
+      setIsMoving(false);
+    }, 1500);
+
     setVisibleShapes(visibleShapes.filter(s => s !== shape));
     setTimeout(() => {
       setShapes(shapes.filter(s => s !== shape));
@@ -100,7 +122,10 @@ const ColorShapesPage: React.FC = () => {
       </Helmet>
       <Container>
         <Row>
-          <AddButton onClick={handleAdd}>+</AddButton>
+          { shapes.length < 5 && !isMoving? 
+            <AddButton onClick={handleAdd} enabled={true}>+</AddButton> :
+            <AddButton enabled={false} />
+          }
         </Row>
         <Row>
           {shapes.map((shape) => (
