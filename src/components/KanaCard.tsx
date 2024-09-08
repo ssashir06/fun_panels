@@ -30,17 +30,21 @@ interface KanaCardProps {
 
 const KanaCard: React.FC<KanaCardProps> = ({ kana, romaji }) => {
   const handleSpeak = (ev: React.MouseEvent<HTMLDivElement>) => {
-    if (kana) {
-      const utterance = new SpeechSynthesisUtterance(`${kana}!`);
-      utterance.lang = 'ja-JP';
-      speechSynthesis.speak(utterance);
-
-      const cardElement = ev.currentTarget;
-      cardElement.style.backgroundColor = 'orange';
-      setTimeout(() => {
-        cardElement.style.backgroundColor = 'white';
-      }, 1000);
+    if (!kana) { 
+      return;
     }
+    const text = kana === 'は' ? 'ハ' :
+                 kana === 'ん' ? 'んん' :
+                 kana;
+    const utterance = new SpeechSynthesisUtterance(`「${text}」`);
+    utterance.lang = 'ja-JP';
+    speechSynthesis.speak(utterance);
+
+    const cardElement = ev.currentTarget;
+    cardElement.style.backgroundColor = 'orange';
+    setTimeout(() => {
+      cardElement.style.backgroundColor = 'white';
+    }, 1000);
   };
 
   return (
