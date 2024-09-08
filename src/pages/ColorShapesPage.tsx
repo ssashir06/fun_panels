@@ -59,9 +59,9 @@ const ColorShapesPage: React.FC = () => {
       { type: 'square', color: 'red', speak: '赤い四角' },
       { type: 'square', color: 'green', speak: '緑の四角' },
       { type: 'square', color: 'blue', speak: '青い四角' },
-      { type: 'triangle', color: 'red', speak: '赤い三角' },
-      { type: 'triangle', color: 'green', speak: '緑の三角' },
-      { type: 'triangle', color: 'blue', speak: '青い三角' },
+      { type: 'triangle', color: 'red', speak: '赤いさんかく' },
+      { type: 'triangle', color: 'green', speak: '緑のさんかく' },
+      { type: 'triangle', color: 'blue', speak: '青いさんかく' },
     ] as (ColorfulShapeProps & { speak: string })[],
   };
 
@@ -130,7 +130,7 @@ const ColorShapesPage: React.FC = () => {
         <Row>
           {shapes.map((shape) => (
             <ShapeWrapper key={shape.id} isVisible={visibleShapes.includes(shape)}>
-              <ColorfulShape {...shape} onClick={(ev) => handleRemove(ev, shape)} />
+              <ColorfulShape {...shape} onClick={(ev) => !isMoving && handleRemove(ev, shape)} />
             </ShapeWrapper>
           ))}
         </Row>
