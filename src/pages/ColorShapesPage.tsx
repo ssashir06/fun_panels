@@ -40,21 +40,48 @@ const ColorShapesPage: React.FC = () => {
     id: number;
   };
 
+  const allColorfulShapes = ['red', 'green', 'blue'].map(color => (
+    ['circle', 'square', 'triangle'].map(type => ({ type, color } as ColorfulShapeProps))
+  )).flat();
+
+  const languageMapping = {
+    'ja-JP': [
+      { type: 'circle', color: 'red', speak: '赤い丸' },
+      { type: 'circle', color: 'green', speak: '緑の丸' },
+      { type: 'circle', color: 'blue', speak: '青い丸' },
+      { type: 'square', color: 'red', speak: '赤い四角' },
+      { type: 'square', color: 'green', speak: '緑の四角' },
+      { type: 'square', color: 'blue', speak: '青い四角' },
+      { type: 'triangle', color: 'red', speak: '赤い三角' },
+      { type: 'triangle', color: 'green', speak: '緑の三角' },
+      { type: 'triangle', color: 'blue', speak: '青い三角' },
+    ] as (ColorfulShapeProps & { speak: string })[],
+  };
+
   const [shapes, setShapes] = useState<EnhancedColorfulShapeProps[]>([]);
   const [visibleShapes, setVisibleShapes] = useState<EnhancedColorfulShapeProps[]>([]);
 
+  const speak = (shape: ColorfulShapeProps, lang: 'ja-JP') => {
+    const text = languageMapping[lang]?.find(s => s.type === shape.type && s.color === shape.color)?.speak;
+    if (!text) {
+      return;
+    }
+
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = lang;
+    speechSynthesis.speak(speech);
+  }
+
   const handleAdd = () => {
-    const all = ['red', 'green', 'blue'].map(color => (
-      ['circle', 'square', 'triangle'].map(type => ({ type, color } as ColorfulShapeProps))
-    )).flat();
     const newShape: EnhancedColorfulShapeProps = {
-      ...all[Math.floor(Math.random() * all.length)],
+      ...allColorfulShapes[Math.floor(Math.random() * allColorfulShapes.length)],
       id: Date.now() * 1000 + Math.floor(Math.random() * 1000),
     };
-    setShapes([...shapes, newShape]);
+    setShapes([newShape, ...shapes]);
     setTimeout(() => {
       setVisibleShapes([...shapes, newShape]);
     }, 10); // Short delay to trigger the fade-in animation
+    speak(newShape, 'ja-JP');
   };
 
   const handleRemove = (ev: React.MouseEvent<HTMLDivElement, MouseEvent>, shape: ColorfulShapeProps) => {
@@ -63,6 +90,7 @@ const ColorShapesPage: React.FC = () => {
     setTimeout(() => {
       setShapes(shapes.filter(s => s !== shape));
     }, 500); // Match the transition duration
+    speak(shape, 'ja-JP');
   };
 
   return (
