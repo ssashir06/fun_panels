@@ -18,8 +18,11 @@ const Row = styled.div`
 
 const ShapeWrapper = styled.div<{ isVisible: boolean }>`
   opacity: ${props => (props.isVisible ? 1 : 0)};
-  transition: opacity 0.5s ease-in-out;
+  transform: ${props => (props.isVisible ? 'scaleX(1)' : 'scaleX(0)')};
+  transform-origin: center;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   margin: 0.5em;
+  overflow: hidden; /* Ensure content is hidden when width is 0 */
 `;
 
 const AddButton = styled.button`
