@@ -8,6 +8,7 @@ import { viteEnv } from '~/config/viteConfigs';
 import { UserNameProvider } from '~/hooks/UserNameContext';
 import useUserName from '~/hooks/useUserName';
 import ClockPage from '~/pages/ClockPage';
+import ColorShapesPage from '~/pages/ColorShapesPage';
 import HomePage from '~/pages/HomePage';
 import KanaPage from '~/pages/KanaPage';
 import UserPage from '~/pages/UserPage';
@@ -62,6 +63,7 @@ const App: React.FC = () => {
             <Route path="/user" element={<UserPage />} />
             <Route path="/clock" element={<ClockPage />} />
             <Route path="/kana" element={<KanaPage />} />
+            <Route path="/colorShapes" element={<ColorShapesPage />} />
             <Route path="*" element={<div>Not Found</div>} />
           </Routes>
         </RightPanel>
