@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
+import useUserName from '~/hooks/useUserName';
 
 const Container = styled.div`
   display: flex;
@@ -10,6 +11,8 @@ const Container = styled.div`
 `;
 
 const HomePage: React.FC = () => {
+  const { userName } = useUserName();
+
   return (
     <>
       <Helmet>
@@ -17,6 +20,8 @@ const HomePage: React.FC = () => {
       </Helmet>
       <Container>
         Fun panels
+        <br />
+        Hello {userName}!
       </Container>
     </>
   );
