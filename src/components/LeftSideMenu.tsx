@@ -28,6 +28,7 @@ const LeftSideMenu: React.FC = () => {
       <Link to="/clock">Clock Page</Link>
       <Link to="/kana">Kana Page</Link>
       <Link to="/colorShapes">Color and Shapes Page</Link>
+      <Link to="/maze">Simple Maze</Link>
     </Nav>
   );
 };
