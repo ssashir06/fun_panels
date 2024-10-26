@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 import MazeRenderer from '~/components/MazeRenderer';
+import { generateMaze } from '~/utils/MazeGenerator';
 
 const Container = styled.div`
   display: flex;
@@ -24,10 +25,8 @@ const Button = styled.button`
 const MazePage: React.FC = () => {
   const [maze, setMaze] = useState<number[][] | null>(null);
 
-  const generateMaze = (size: number) => {
-    const newMaze = Array.from({ length: size }, () =>
-      Array.from({ length: size }, () => (Math.random() > 0.7 ? 1 : 0))
-    );
+  const handleGenerateMaze = (size: number) => {
+    const newMaze = generateMaze(size, size, 0, 0, size - 1, size - 1);
     setMaze(newMaze);
   };
 
@@ -45,10 +44,12 @@ const MazePage: React.FC = () => {
         <title>Simple Maze</title>
       </Helmet>
       <Container>
-        <ButtonRow>
-          <Button onClick={() => generateMaze(10)}>Generate a Simple Maze</Button>
-          <Button onClick={() => generateMaze(30)}>Generate a Difficult Maze</Button>
-        </ButtonRow>
+        {!maze && (
+          <ButtonRow>
+            <Button onClick={() => handleGenerateMaze(10)}>Generate a Simple Maze</Button>
+            <Button onClick={() => handleGenerateMaze(30)}>Generate a Difficult Maze</Button>
+          </ButtonRow>
+        )}
         {maze && <MazeRenderer maze={maze} />}
         {maze && (
           <ButtonRow>
