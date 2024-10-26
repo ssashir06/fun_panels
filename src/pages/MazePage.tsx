@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
+
 import MazeRenderer from '~/components/MazeRenderer';
 import { generateMaze } from '~/utils/MazeGenerator';
 
@@ -10,32 +11,33 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const ButtonRow = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 1em 0;
-`;
-
 const Button = styled.button`
-  margin: 0 1em;
-  padding: 0.5em 1em;
-  font-size: 1em;
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
 `;
 
 const MazePage: React.FC = () => {
   const [maze, setMaze] = useState<number[][] | null>(null);
+  const [mazeSize, setMazeSize] = useState<{ width: number; height: number } | null>(null);
 
-  const handleGenerateMaze = (size: number) => {
-    const newMaze = generateMaze(size, size, 0, 0, size - 1, size - 1);
+  const handleGenerateMaze = (size: 'simple' | 'difficult') => {
+    const width = size === 'simple' ? 10 : 30;
+    const height = size === 'simple' ? 20 : 40;
+    const newMaze = generateMaze(width, height, 0, 0, width - 1, height - 1);
     setMaze(newMaze);
+    setMazeSize({ width, height });
   };
 
-  const clearMaze = () => {
+  const handleClearMaze = () => {
     setMaze(null);
+    setMazeSize(null);
   };
 
-  const printMaze = () => {
-    window.print();
+  const handlePrintMaze = () => {
+    if (maze) {
+      window.print();
+    }
   };
 
   return (
@@ -45,17 +47,17 @@ const MazePage: React.FC = () => {
       </Helmet>
       <Container>
         {!maze && (
-          <ButtonRow>
-            <Button onClick={() => handleGenerateMaze(10)}>Generate a Simple Maze</Button>
-            <Button onClick={() => handleGenerateMaze(30)}>Generate a Difficult Maze</Button>
-          </ButtonRow>
+          <>
+            <Button onClick={() => handleGenerateMaze('simple')}>Generate a Simple Maze</Button>
+            <Button onClick={() => handleGenerateMaze('difficult')}>Generate a Difficult Maze</Button>
+          </>
         )}
-        {maze && <MazeRenderer maze={maze} />}
-        {maze && (
-          <ButtonRow>
-            <Button onClick={clearMaze}>Clear</Button>
-            <Button onClick={printMaze}>Print</Button>
-          </ButtonRow>
+        {maze && mazeSize && (
+          <>
+            <MazeRenderer maze={maze} />
+            <Button onClick={handleClearMaze}>Clear</Button>
+            <Button onClick={handlePrintMaze}>Print</Button>
+          </>
         )}
       </Container>
     </>
