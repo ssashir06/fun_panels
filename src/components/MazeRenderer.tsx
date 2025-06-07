@@ -18,8 +18,8 @@ const MazeContainer = styled.div<{ width: number, height: number} >`
   height: 100%;
 `;
 
-const Cell = styled.div<{ isWall: boolean; borders: string }>`
-  background-color: ${({ isWall }) => (isWall ? 'black' : 'white')};
+const Cell = styled.div<{ cell: MazeCell; borders: string }>`
+  background-color: ${({ cell }) => (cell === 1 ? 'black' : cell === 0 ? 'white' : cell === 2 ? 'green' : 'red')};
   border: ${({ borders }) => borders};
 `;
 
@@ -38,7 +38,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({ maze, width, height }) => {
         row.map((cell, cellIndex) => (
           <Cell
             key={`${rowIndex}-${cellIndex}`}
-            isWall={cell === 1}
+            cell={cell}
             borders={getBorders(maze, rowIndex, cellIndex)}
           />
         ))

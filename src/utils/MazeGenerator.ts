@@ -1,50 +1,75 @@
-export type MazeCell = 0 | 1; // 0 for path, 1 for wall
+export type MazeCell = 0 | 1 | 2 | 3; // 0 for path, 1 for wall, 2 for start, 3 for goal
 
-export const generateMaze = (width: number, height: number, startX: number, startY: number, goalX: number, goalY: number): MazeCell[][] => {
-  const maze = Array.from({ length: height }, () => Array(width).fill(1));
-  const walls = [];
-  const sets = new Map();
+// This function generates a maze as per the parameters provided.
+// // Parameters:
+// - width: Width of the maze
+// - height: Height of the maze
+// - startX: X-coordinate of the starting point
+// - startY: Y-coordinate of the starting point
+// - goalX: X-coordinate of the goal point
+// - goalY: Y-coordinate of the goal point
+// The goal and start points are set to 0 (path) in the maze, while walls are represented by 1.
+// All the 4 edge lines (top, bottom, left, right) of the maze are walls (1) except for the start and goal points.
+export const generateMaze = (width: number, height: number): { maze: MazeCell[][], width: number, height: number } => {
+  // directions: up, down, left, right
+  const directions = [
+    { dx: 0, dy: -1 }, // up
+    { dx: 0, dy: 1 },  // down
+    { dx: -1, dy: 0 }, // left
+    { dx: 1, dy: 0 }   // right
+  ];
+  // Align the size of the maze to be odd numbers for better maze generation
+  if (width % 2 === 0) width += 1;
+  if (height % 2 === 0) height += 1;
+  const startX = 1; // Starting point X-coordinate
+  const startY = 1; // Starting point Y-coordinate
+  const goalX = width - 2; // Goal point X-coordinate
+  const goalY = height - 2; // Goal point Y-coordinate
+  // Initialize the maze with walls (1)
+  const maze: MazeCell[][] = Array.from({ length: height }, () => Array(width).fill(1));
+  
+  // Fill out the cells with paths (0) by a recursive function
+  function carvePath(x: number, y: number): boolean {
+    const nextDirections = directions.sort(() => Math.random() - 0.5); // Shuffle directions for randomness
+    for (const { dx, dy } of nextDirections) {
+      const nps = [
+        { x: x + dx, y: y + dy }, // New position
+        { x: x + 2 * dx, y: y + 2 * dy } // Position two steps away
+      ];
 
-  const find = (cell: string): string => {
-    if (sets.get(cell) !== cell) {
-      sets.set(cell, find(sets.get(cell)));
-    }
-    return sets.get(cell);
-  };
-
-  const union = (cell1: string, cell2: string) => {
-    const root1 = find(cell1);
-    const root2 = find(cell2);
-    if (root1 !== root2) {
-      sets.set(root1, root2);
-    }
-  };
-
-  for (let row = 0; row < height; row++) {
-    for (let col = 0; col < width; col++) {
-      const cell = `${row}-${col}`;
-      sets.set(cell, cell);
-      if (row % 2 === 1 && col % 2 === 1) {
-        maze[row][col] = 0;
-        if (row < height - 2) walls.push([row + 1, col]);
-        if (col < width - 2) walls.push([row, col + 1]);
+      // Check if the new position is within bounds and is a wall
+      const passed = nps.every(({ x, y }) => x >= 1 && x < width - 1 && y >= 1 && y < height - 1 && maze[y][x] === 1);
+      if (passed) {
+        for (const { x: newX, y: newY } of nps) {
+          maze[newY][newX] = 0; // Mark as path
+        }
+        const isGoalReached = nps.find(({ x: newX, y: newY }) => newX === goalX && newY === goalY) !== undefined;
+        if (isGoalReached || carvePath(nps[1].x, nps[1].y)) {
+          return true; // If we reached the goal or found a path to it
+        }
       }
     }
+    return false;
   }
-
-  while (walls.length > 0) {
-    const randomIndex = Math.floor(Math.random() * walls.length);
-    const [row, col] = walls.splice(randomIndex, 1)[0];
-    const cell1 = row % 2 === 0 ? `${row - 1}-${col}` : `${row}-${col - 1}`;
-    const cell2 = row % 2 === 0 ? `${row + 1}-${col}` : `${row}-${col + 1}`;
-    if (find(cell1) !== find(cell2)) {
-      maze[row][col] = 0;
-      union(cell1, cell2);
+  // Start carving the path from the start point
+  carvePath(startX, startY);
+  // Find out any walls that are not part of the path and set them to walls (1)
+  function range(start: number, end: number, step: number = 1): number[] {
+    const result: number[] = [];
+    for (let i = start; i < end; i += step) {
+      result.push(i);
     }
+    return result;
+  }
+  
+  const pathCellPositions = range(1, height - 1, 2).flatMap(y => range(1, width - 1, 2).map(x => ({ x, y }))).sort(() => Math.random() - 0.5);
+  for (const { x, y } of pathCellPositions) {
+    if (maze[y][x] === 1) continue; // Skip if already a path
+    carvePath(x, y);
   }
 
-  maze[startY][startX] = 0;
-  maze[goalY][goalX] = 0;
-
-  return maze;
+  // Fill the start and goal points in the maze
+  maze[0][1] = 2; // Set start point as path
+  maze[height-1][width-2] = 3; // Set goal point as path
+  return {maze, width, height};
 };

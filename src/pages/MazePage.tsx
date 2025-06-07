@@ -26,9 +26,9 @@ const MazePage: React.FC = () => {
   const handleGenerateMaze = (size: 'simple' | 'difficult') => {
     const width = size === 'simple' ? 10 : 30;
     const height = size === 'simple' ? 20 : 40;
-    const newMaze = generateMaze(width, height, 0, 0, width - 1, height - 1);
-    setMaze(newMaze);
-    setMazeSize({ width, height });
+    const newMaze = generateMaze(width, height);
+    setMaze(newMaze.maze);
+    setMazeSize({ width: newMaze.width, height: newMaze.height });
   };
 
   const handleClearMaze = () => {
