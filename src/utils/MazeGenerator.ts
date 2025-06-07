@@ -1,4 +1,6 @@
-export const generateMaze = (width: number, height: number, startX: number, startY: number, goalX: number, goalY: number): number[][] => {
+export type MazeCell = 0 | 1; // 0 for path, 1 for wall
+
+export const generateMaze = (width: number, height: number, startX: number, startY: number, goalX: number, goalY: number): MazeCell[][] => {
   const maze = Array.from({ length: height }, () => Array(width).fill(1));
   const walls = [];
   const sets = new Map();

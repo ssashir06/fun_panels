@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 
 import MazeRenderer from '~/components/MazeRenderer';
-import { generateMaze } from '~/utils/MazeGenerator';
+import { generateMaze, MazeCell } from '~/utils/MazeGenerator';
 
 const Container = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ const Button = styled.button`
 `;
 
 const MazePage: React.FC = () => {
-  const [maze, setMaze] = useState<number[][] | null>(null);
+  const [maze, setMaze] = useState<MazeCell[][] | null>(null);
   const [mazeSize, setMazeSize] = useState<{ width: number; height: number } | null>(null);
 
   const handleGenerateMaze = (size: 'simple' | 'difficult') => {
@@ -56,7 +56,7 @@ const MazePage: React.FC = () => {
         )}
         {maze && mazeSize && (
           <>
-            <MazeRenderer maze={maze} />
+            <MazeRenderer maze={maze} width={mazeSize.width} height={mazeSize.height} />
             <Button onClick={handleClearMaze}>Clear</Button>
             <Button onClick={handlePrintMaze}>Print</Button>
           </>
