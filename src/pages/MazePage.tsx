@@ -47,8 +47,8 @@ const MazePage: React.FC = () => {
   const [mazeRenderSize, setMazeRenderSize] = useState<number>(0);
 
   const handleGenerateMaze = (size: 'simple' | 'difficult') => {
-    const width = size === 'simple' ? 10 : 30;
-    const height = size === 'simple' ? 20 : 40;
+    const width = size === 'simple' ? 30 : 80;
+    const height = size === 'simple' ? 20 : 70;
     const newMaze = generateMaze(width, height);
     setMaze(newMaze.maze);
     setMazeSize({ width: newMaze.width, height: newMaze.height });

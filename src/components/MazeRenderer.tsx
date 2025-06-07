@@ -24,13 +24,58 @@ const MazeContainer = styled.div<{ width: number; height: number; cellSize: numb
   box-sizing: content-box;
 `;
 
-const Cell = styled.div<{ cell: MazeCell; borders: string; cellSize: number }>`
+const textureMap: Record<number, { x: number; y: number }> = {
+  1: { x: 1, y: 1 },
+  2: { x: 2, y: 1 },
+  3: { x: 3, y: 1 },
+  4: { x: 1, y: 2 },
+  5: { x: 2, y: 2 },
+  6: { x: 3, y: 2 },
+  7: { x: 1, y: 3 },
+  8: { x: 2, y: 3 },
+  9: { x: 3, y: 3 },
+  10: { x: 0, y: 0 },
+  11: { x: 4, y: 0 },
+  12: { x: 0, y: 4 },
+  13: { x: 4, y: 4 },
+};
+
+const TEXTURE_WIDTH = 320;
+const TEXTURE_HEIGHT = 320;
+const PART_SIZE = 64; // Each partition in the texture is 64x64
+
+const Partition = styled.div<{
+  partition: number;
+  cellSize: number;
+  quadrant: 'ul' | 'ur' | 'bl' | 'br';
+}>`
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  background-image: url('/maze%20texture.png');
+  ${({ partition, cellSize }) => {
+    const { x, y } = textureMap[partition];
+    return `
+      background-size: ${TEXTURE_WIDTH * cellSize / PART_SIZE / 2}px ${TEXTURE_HEIGHT * cellSize / PART_SIZE / 2}px;
+      background-position: -${x * cellSize / 2}px -${y * cellSize / 2}px;
+    `;
+  }}
+  ${({ quadrant }) => {
+    switch (quadrant) {
+      case 'ul': return 'top: 0; left: 0;';
+      case 'ur': return 'top: 0; right: 0;';
+      case 'bl': return 'bottom: 0; left: 0;';
+      case 'br': return 'bottom: 0; right: 0;';
+    }
+  }}
+`;
+
+const CellWrapper = styled.div<{ cellSize: number }>`
+  position: relative;
   width: ${({ cellSize }) => cellSize}px;
   height: ${({ cellSize }) => cellSize}px;
-  background-color: ${({ cell }) =>
-    cell === 1 ? 'black' : cell === 0 ? 'white' : cell === 2 ? 'green' : 'red'};
-  border: ${({ borders }) => borders};
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const MazeRenderer: React.FC<MazeRendererProps> = ({
@@ -39,28 +84,96 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
   height,
   containerSize,
 }) => {
-  const cellSize = getCellSize(containerSize, width, height);
+  const visibleWidth = Math.floor(width / 2);
+  const visibleHeight = Math.floor(height / 2);
+  const cellSize = getCellSize(containerSize, visibleWidth, visibleHeight);
 
-  const getBorders = (maze: number[][], rowIndex: number, cellIndex: number) => {
-    const top = rowIndex > 0 && maze[rowIndex - 1][cellIndex] === 1 ? '2px solid black' : 'none';
-    const left = cellIndex > 0 && maze[rowIndex][cellIndex - 1] === 1 ? '2px solid black' : 'none';
-    const right = cellIndex < maze[rowIndex].length - 1 && maze[rowIndex][cellIndex + 1] === 1 ? '2px solid black' : 'none';
-    const bottom = rowIndex < maze.length - 1 && maze[rowIndex + 1][cellIndex] === 1 ? '2px solid black' : 'none';
-    return `${top} ${right} ${bottom} ${left}`;
+  // Helper to check if a cell is a wall (1)
+  const isWall = (y: number, x: number) =>
+    maze[y] && maze[y][x] === 1;
+
+  // Partition logic as described
+  const getPartition = (
+    y: number,
+    x: number,
+    quadrant: 'ul' | 'ur' | 'bl' | 'br'
+  ) => {
+    const up = isWall(y - 1, x);
+    const left = isWall(y, x - 1);
+    const right = isWall(y, x + 1);
+    const down = isWall(y + 1, x);
+
+    switch (quadrant) {
+      case 'ul':
+        if (!left && !up) return 13;
+        if (left && up) return 1;
+        if (left) return 4;
+        if (up) return 2;
+        return 5;
+      case 'ur':
+        if (!right && !up) return 12;
+        if (right && up) return 3;
+        if (right) return 6;
+        if (up) return 2;
+        return 5;
+      case 'bl':
+        if (!left && !down) return 11;
+        if (left && down) return 7;
+        if (left) return 4;
+        if (down) return 8;
+        return 5;
+      case 'br':
+        if (!right && !down) return 10;
+        if (right && down) return 9;
+        if (right) return 6;
+        if (down) return 8;
+        return 5;
+    }
   };
 
-  return (
-    <MazeContainer width={width} height={height} cellSize={cellSize}>
-      {maze.map((row, rowIndex) =>
-        row.map((cell, cellIndex) => (
-          <Cell
-            key={`${rowIndex}-${cellIndex}`}
-            cell={cell}
-            borders={getBorders(maze, rowIndex, cellIndex)}
+  // Use for loops instead of map
+  const cells: React.ReactNode[] = [];
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (y % 2 === 1 && x % 2 === 1) {
+        cells.push(
+          <CellWrapper
+            key={`${y}-${x}`}
             cellSize={cellSize}
-          />
-        ))
-      )}
+          >
+            <Partition
+              partition={getPartition(y, x, 'ul')}
+              cellSize={cellSize}
+              quadrant="ul"
+            />
+            <Partition
+              partition={getPartition(y, x, 'ur')}
+              cellSize={cellSize}
+              quadrant="ur"
+            />
+            <Partition
+              partition={getPartition(y, x, 'bl')}
+              cellSize={cellSize}
+              quadrant="bl"
+            />
+            <Partition
+              partition={getPartition(y, x, 'br')}
+              cellSize={cellSize}
+              quadrant="br"
+            />
+          </CellWrapper>
+        );
+      } else {
+        // cells.push(
+        //   <div key={`${y}-${x}`} style={{ width: cellSize, height: cellSize }} />
+        // );
+      }
+    }
+  }
+
+  return (
+    <MazeContainer width={visibleWidth} height={visibleHeight} cellSize={cellSize}>
+      {cells}
     </MazeContainer>
   );
 };
