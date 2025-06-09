@@ -52,7 +52,7 @@ const Partition = styled.div<{
   position: absolute;
   width: 50%;
   height: 50%;
-  background-image: url('/maze%20texture.png');
+  background-image: url('/maze%20texture%203.png');
   ${({ partition, cellSize }) => {
     const { x, y } = textureMap[partition];
     return `
@@ -133,41 +133,35 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
 
   // Use for loops instead of map
   const cells: React.ReactNode[] = [];
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      if (y % 2 === 1 && x % 2 === 1) {
-        cells.push(
-          <CellWrapper
-            key={`${y}-${x}`}
+  for (let y = 1; y < height; y+=2) {
+    for (let x = 1; x < width; x+=2) {
+      cells.push(
+        <CellWrapper
+          key={`${y}-${x}`}
+          cellSize={cellSize}
+        >
+          <Partition
+            partition={getPartition(y, x, 'ul')}
             cellSize={cellSize}
-          >
-            <Partition
-              partition={getPartition(y, x, 'ul')}
-              cellSize={cellSize}
-              quadrant="ul"
-            />
-            <Partition
-              partition={getPartition(y, x, 'ur')}
-              cellSize={cellSize}
-              quadrant="ur"
-            />
-            <Partition
-              partition={getPartition(y, x, 'bl')}
-              cellSize={cellSize}
-              quadrant="bl"
-            />
-            <Partition
-              partition={getPartition(y, x, 'br')}
-              cellSize={cellSize}
-              quadrant="br"
-            />
-          </CellWrapper>
-        );
-      } else {
-        // cells.push(
-        //   <div key={`${y}-${x}`} style={{ width: cellSize, height: cellSize }} />
-        // );
-      }
+            quadrant="ul"
+          />
+          <Partition
+            partition={getPartition(y, x, 'ur')}
+            cellSize={cellSize}
+            quadrant="ur"
+          />
+          <Partition
+            partition={getPartition(y, x, 'bl')}
+            cellSize={cellSize}
+            quadrant="bl"
+          />
+          <Partition
+            partition={getPartition(y, x, 'br')}
+            cellSize={cellSize}
+            quadrant="br"
+          />
+        </CellWrapper>
+      );
     }
   }
 
