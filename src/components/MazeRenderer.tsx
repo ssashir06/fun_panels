@@ -30,6 +30,13 @@ const PART_SIZE = 64; // Each partition in the texture is 64x64
 const CANVAS_WIDTH = 1024;
 const CANVAS_HEIGHT = 768;
 
+const TEXTURES = [
+  '/maze%20texture.png',
+  // '/maze%20texture%202.png',
+  '/maze%20texture%203.png',
+  '/maze%20texture%204.png',
+];
+
 const MazeRenderer: React.FC<MazeRendererProps> = ({
   maze,
   width,
@@ -193,6 +200,8 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
     win.document.close();
   };
 
+  const textureSrc = TEXTURES[Math.floor(Math.random() * TEXTURES.length)];
+
   return (
     <div style={{ width: '100%', height: '100%', maxWidth: '100vw', maxHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ width: '100%', maxWidth: 1024, aspectRatio: '4/3' }}>
@@ -213,7 +222,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
       </div>
       <img
         ref={textureRef}
-        src="/maze%20texture%203.png"
+        src={textureSrc}
         alt="maze texture"
         style={{ display: 'none' }}
         onLoad={handleTextureLoad}
