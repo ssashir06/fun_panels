@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { MazeCell } from '~/utils/MazeGenerator';
 
@@ -37,6 +37,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textureRef = useRef<HTMLImageElement | null>(null);
+  const [textureLoaded, setTextureLoaded] = useState(false);
 
   // Helper to check if a cell is a wall (1)
   const isWall = (y: number, x: number) =>
@@ -83,6 +84,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
 
   // Draw maze on canvas
   useEffect(() => {
+    if (!textureLoaded) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -133,14 +135,11 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
         });
       }
     }
-  }, [maze, width, height]);
+  }, [maze, width, height, textureLoaded]);
 
   // Redraw on texture load
   const handleTextureLoad = () => {
-    // Force re-render
-    if (canvasRef.current) {
-      canvasRef.current.dispatchEvent(new Event('maze-texture-loaded'));
-    }
+    setTextureLoaded(true);
   };
 
   // Print handler
@@ -156,7 +155,9 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
           <title>Print Maze</title>
           <style>
             @media print {
-              size: landscape;
+              @page {
+                size: landscape;
+              }
               body, html {
                 margin: 0;
                 padding: 0;
