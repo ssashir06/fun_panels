@@ -59,12 +59,6 @@ const MazePage: React.FC = () => {
     setMazeSize(null);
   };
 
-  const handlePrintMaze = () => {
-    if (maze) {
-      window.print();
-    }
-  };
-
   useLayoutEffect(() => {
     if (maze && mazeSize && containerRef.current) {
       const containerWidth = containerRef.current.offsetWidth;
@@ -103,7 +97,6 @@ const MazePage: React.FC = () => {
               </MazeInnerWrapper>
             </MazeOuterWrapper>
             <Button onClick={handleClearMaze}>Clear</Button>
-            <Button onClick={handlePrintMaze}>Print</Button>
           </>
         )}
       </Container>

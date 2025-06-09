@@ -1,5 +1,4 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useRef } from 'react';
 
 import { MazeCell } from '~/utils/MazeGenerator';
 
@@ -9,20 +8,6 @@ interface MazeRendererProps {
   height: number;
   containerSize: number;
 }
-
-// Calculate cell size to fit the container and keep cells square
-const getCellSize = (containerSize: number, width: number, height: number) =>
-  Math.floor(containerSize / Math.max(width, height));
-
-const MazeContainer = styled.div<{ width: number; height: number; cellSize: number }>`
-  display: grid;
-  grid-template-columns: ${({ width, cellSize }) => `repeat(${width}, ${cellSize}px)`};
-  grid-template-rows: ${({ height, cellSize }) => `repeat(${height}, ${cellSize}px)`};
-  gap: 0;
-  width: ${({ width, cellSize }) => width * cellSize}px;
-  height: ${({ height, cellSize }) => height * cellSize}px;
-  box-sizing: content-box;
-`;
 
 const textureMap: Record<number, { x: number; y: number }> = {
   1: { x: 1, y: 1 },
@@ -40,53 +25,18 @@ const textureMap: Record<number, { x: number; y: number }> = {
   13: { x: 4, y: 4 },
 };
 
-const TEXTURE_WIDTH = 320;
-const TEXTURE_HEIGHT = 320;
 const PART_SIZE = 64; // Each partition in the texture is 64x64
 
-const Partition = styled.div<{
-  partition: number;
-  cellSize: number;
-  quadrant: 'ul' | 'ur' | 'bl' | 'br';
-}>`
-  position: absolute;
-  width: 50%;
-  height: 50%;
-  background-image: url('/maze%20texture%203.png');
-  ${({ partition, cellSize }) => {
-    const { x, y } = textureMap[partition];
-    return `
-      background-size: ${TEXTURE_WIDTH * cellSize / PART_SIZE / 2}px ${TEXTURE_HEIGHT * cellSize / PART_SIZE / 2}px;
-      background-position: -${x * cellSize / 2}px -${y * cellSize / 2}px;
-    `;
-  }}
-  ${({ quadrant }) => {
-    switch (quadrant) {
-      case 'ul': return 'top: 0; left: 0;';
-      case 'ur': return 'top: 0; right: 0;';
-      case 'bl': return 'bottom: 0; left: 0;';
-      case 'br': return 'bottom: 0; right: 0;';
-    }
-  }}
-`;
-
-const CellWrapper = styled.div<{ cellSize: number }>`
-  position: relative;
-  width: ${({ cellSize }) => cellSize}px;
-  height: ${({ cellSize }) => cellSize}px;
-  box-sizing: border-box;
-  overflow: hidden;
-`;
+const CANVAS_WIDTH = 1024;
+const CANVAS_HEIGHT = 768;
 
 const MazeRenderer: React.FC<MazeRendererProps> = ({
   maze,
   width,
   height,
-  containerSize,
 }) => {
-  const visibleWidth = Math.floor(width / 2);
-  const visibleHeight = Math.floor(height / 2);
-  const cellSize = getCellSize(containerSize, visibleWidth, visibleHeight);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const textureRef = useRef<HTMLImageElement | null>(null);
 
   // Helper to check if a cell is a wall (1)
   const isWall = (y: number, x: number) =>
@@ -131,44 +81,144 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
     }
   };
 
-  // Use for loops instead of map
-  const cells: React.ReactNode[] = [];
-  for (let y = 1; y < height; y+=2) {
-    for (let x = 1; x < width; x+=2) {
-      cells.push(
-        <CellWrapper
-          key={`${y}-${x}`}
-          cellSize={cellSize}
-        >
-          <Partition
-            partition={getPartition(y, x, 'ul')}
-            cellSize={cellSize}
-            quadrant="ul"
-          />
-          <Partition
-            partition={getPartition(y, x, 'ur')}
-            cellSize={cellSize}
-            quadrant="ur"
-          />
-          <Partition
-            partition={getPartition(y, x, 'bl')}
-            cellSize={cellSize}
-            quadrant="bl"
-          />
-          <Partition
-            partition={getPartition(y, x, 'br')}
-            cellSize={cellSize}
-            quadrant="br"
-          />
-        </CellWrapper>
-      );
+  // Draw maze on canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Clear
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    // Calculate cell size to fit the maze in canvas
+    const visibleWidth = Math.floor(width / 2);
+    const visibleHeight = Math.floor(height / 2);
+    const cellSize = Math.min(
+      Math.floor(CANVAS_WIDTH / visibleWidth),
+      Math.floor(CANVAS_HEIGHT / visibleHeight)
+    );
+
+    // Center the maze
+    const offsetX = Math.floor((CANVAS_WIDTH - visibleWidth * cellSize) / 2);
+    const offsetY = Math.floor((CANVAS_HEIGHT - visibleHeight * cellSize) / 2);
+
+    const texture = textureRef.current;
+    if (!texture?.complete) {
+      // Will re-render on image load
+      return;
     }
-  }
+
+    for (let y = 1; y < height; y += 2) {
+      for (let x = 1; x < width; x += 2) {
+        const px = offsetX + ((x - 1) / 2) * cellSize;
+        const py = offsetY + ((y - 1) / 2) * cellSize;
+        const half = cellSize / 2;
+        (['ul', 'ur', 'bl', 'br'] as const).forEach((q, i) => {
+          const partition = getPartition(y, x, q);
+          const { x: tx, y: ty } = textureMap[partition];
+          // Source rect in texture
+          const sx = tx * PART_SIZE;
+          const sy = ty * PART_SIZE;
+          // Destination rect in canvas
+          let dx = px, dy = py;
+          if (q === 'ur') dx += half;
+          if (q === 'bl') dy += half;
+          if (q === 'br') { dx += half; dy += half; }
+          ctx.drawImage(
+            texture,
+            sx, sy, PART_SIZE, PART_SIZE,
+            dx, dy, half, half
+          );
+        });
+      }
+    }
+  }, [maze, width, height]);
+
+  // Redraw on texture load
+  const handleTextureLoad = () => {
+    // Force re-render
+    if (canvasRef.current) {
+      canvasRef.current.dispatchEvent(new Event('maze-texture-loaded'));
+    }
+  };
+
+  // Print handler
+  const handlePrint = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dataUrl = canvas.toDataURL('image/png');
+    const win = window.open('', '_blank');
+    if (!win) return;
+    win.document.write(`
+      <html>
+        <head>
+          <title>Print Maze</title>
+          <style>
+            @media print {
+              size: landscape;
+              body, html {
+                margin: 0;
+                padding: 0;
+                width: 280mm;
+                height: 190mm;
+              }
+              img {
+                display: block;
+                margin: auto;
+                max-width: 100%;
+                max-height: 100%;
+                width: 210mm;
+                height: auto;
+                page-break-after: avoid;
+              }
+            }
+            body {
+              margin: 0;
+              padding: 0;
+              background: white;
+              text-align: center;
+            }
+          </style>
+        </head>
+        <body>
+          <img src="${dataUrl}" style="width:210mm;max-height:297mm;" />
+          <script>
+            window.onload = function() { window.print(); }
+          </script>
+        </body>
+      </html>
+    `);
+    win.document.close();
+  };
 
   return (
-    <MazeContainer width={visibleWidth} height={visibleHeight} cellSize={cellSize}>
-      {cells}
-    </MazeContainer>
+    <div style={{ width: '100%', height: '100%', maxWidth: '100vw', maxHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: '100%', maxWidth: 1024, aspectRatio: '4/3' }}>
+        <canvas
+          ref={canvasRef}
+          width={1024}
+          height={768}
+          style={{
+            width: '100%',
+            height: 'auto',
+            maxWidth: '100%',
+            maxHeight: '80vh',
+            border: '1px solid #ccc',
+            background: '#fff',
+            display: 'block'
+          }}
+        />
+      </div>
+      <img
+        ref={textureRef}
+        src="/maze%20texture%203.png"
+        alt="maze texture"
+        style={{ display: 'none' }}
+        onLoad={handleTextureLoad}
+      />
+      <button onClick={handlePrint} style={{ marginTop: 8 }}>Print</button>
+    </div>
   );
 };
 
