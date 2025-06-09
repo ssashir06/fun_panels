@@ -200,7 +200,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
     win.document.close();
   };
 
-  const textureSrc = TEXTURES[Math.floor(Math.random() * TEXTURES.length)];
+  const textureSrc = TEXTURES.sort(() => Math.random() - 0.5)[0];
 
   return (
     <div style={{ width: '100%', height: '100%', maxWidth: '100vw', maxHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -225,7 +225,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
         src={textureSrc}
         alt="maze texture"
         style={{ display: 'none' }}
-        onLoad={handleTextureLoad}
+        onLoad={() => setTimeout(handleTextureLoad, 500)}
       />
       <button onClick={handlePrint} style={{ marginTop: 8 }}>Print</button>
     </div>
