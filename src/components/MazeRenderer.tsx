@@ -33,7 +33,7 @@ const CANVAS_HEIGHT = 768;
 
 const TEXTURES = [
   '/maze%20texture.png',
-  // '/maze%20texture%202.png',
+  '/maze%20texture%202.png',
   '/maze%20texture%203.png',
   '/maze%20texture%204.png',
 ];
