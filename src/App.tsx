@@ -12,6 +12,7 @@ import ColorShapesPage from '~/pages/ColorShapesPage';
 import HomePage from '~/pages/HomePage';
 import KanaPage from '~/pages/KanaPage';
 import UserPage from '~/pages/UserPage';
+import MazePage from '~/pages/MazePage';
 
 const baseUrl = viteEnv.BASE_URL;
 
@@ -64,6 +65,7 @@ const App: React.FC = () => {
             <Route path="/clock" element={<ClockPage />} />
             <Route path="/kana" element={<KanaPage />} />
             <Route path="/colorShapes" element={<ColorShapesPage />} />
+            <Route path="/maze" element={<MazePage />} />
             <Route path="*" element={<div>Not Found</div>} />
           </Routes>
         </RightPanel>

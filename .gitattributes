@@ -1,0 +1,45 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Explicitly declare text files we want to always be normalized and converted
+*.js     text
+*.jsx    text
+*.ts     text
+*.tsx    text
+*.json   text
+*.css    text
+*.scss   text
+*.html   text
+*.md     text
+*.yml    text
+*.yaml   text
+*.env    text
+*.sh     text eol=lf
+
+# Binary files
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.svg    text
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.eot    binary
+*.pdf    binary
+*.xrff   binary
+
+# Prevent lock files from being normalized
+package-lock.json -text
+yarn.lock        -text
+
+# Handle Windows/Mac/Linux shell scripts
+*.sh     text eol=lf
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+
+# Ignore node_modules (should be in .gitignore, but safe here)
+node_modules/** -text
+
+# End of file
