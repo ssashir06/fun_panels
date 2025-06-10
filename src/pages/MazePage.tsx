@@ -45,9 +45,14 @@ const MazePage: React.FC = () => {
   const [mazeRenderSize, setMazeRenderSize] = useState<number>(0);
   const mazePrintRef = useRef<(() => void) | null>(null);
 
-  const handleGenerateMaze = (size: 'simple' | 'difficult') => {
-    const width = size === 'simple' ? 30 : 80;
-    const height = size === 'simple' ? 20 : 70;
+  const handleGenerateMaze = (difficulty: 'easy' | 'simple' | 'difficult') => {
+    const sizeMap: Record<string, { width: number; height: number }> = {
+      easy: { width: 20, height: 15 },
+      simple: { width: 30, height: 20 },
+      difficult: { width: 80, height: 70 }
+    };
+    const width = sizeMap[difficulty].width;
+    const height = sizeMap[difficulty].height;
     const newMaze = generateMaze(width, height);
     setMaze(newMaze.maze);
     setMazeSize({ width: newMaze.width, height: newMaze.height });
@@ -85,6 +90,7 @@ const MazePage: React.FC = () => {
       <Container ref={containerRef}>
         {!maze && (
           <>
+            <Button onClick={() => handleGenerateMaze('easy')}>Generate a Easy Maze</Button>
             <Button onClick={() => handleGenerateMaze('simple')}>Generate a Simple Maze</Button>
             <Button onClick={() => handleGenerateMaze('difficult')}>Generate a Difficult Maze</Button>
           </>
