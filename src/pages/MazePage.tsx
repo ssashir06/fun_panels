@@ -42,7 +42,6 @@ const MazePage: React.FC = () => {
   const [maze, setMaze] = useState<MazeCell[][] | null>(null);
   const [mazeSize, setMazeSize] = useState<{ width: number; height: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mazeRenderSize, setMazeRenderSize] = useState<number>(0);
   const mazePrintRef = useRef<(() => void) | null>(null);
 
   const handleGenerateMaze = (difficulty: 'easy' | 'simple' | 'difficult') => {
@@ -68,20 +67,7 @@ const MazePage: React.FC = () => {
       mazePrintRef.current();
     }
   };
-
-  useLayoutEffect(() => {
-    if (maze && mazeSize && containerRef.current) {
-      const containerWidth = containerRef.current.offsetWidth;
-      const containerHeight = containerRef.current.offsetHeight;
-      // Calculate max cell size to keep cells square and fit maze in container
-      const cellWidth = Math.floor(containerWidth / mazeSize.width);
-      const cellHeight = Math.floor(containerHeight / mazeSize.height);
-      const cellSize = Math.max(8, Math.min(cellWidth, cellHeight)); // min cell size 8px
-      const size = Math.min(cellSize * mazeSize.width, cellSize * mazeSize.height);
-      setMazeRenderSize(size);
-    }
-  }, [maze, mazeSize]);
-
+  
   return (
     <>
       <Helmet>
@@ -103,7 +89,6 @@ const MazePage: React.FC = () => {
                   maze={maze}
                   width={mazeSize.width}
                   height={mazeSize.height}
-                  containerSize={mazeRenderSize}
                   onPrintRef={mazePrintRef}
                 />
               </MazeInnerWrapper>

@@ -7,7 +7,6 @@ interface MazeRendererProps {
   maze: MazeCell[][];
   width: number;
   height: number;
-  containerSize: number;
   onPrintRef?: React.MutableRefObject<(() => void) | null>;
 }
 
