@@ -29,9 +29,7 @@ const MazeOuterWrapper = styled.div`
   position: relative;
 `;
 
-const MazeInnerWrapper = styled.div<{ size: number }>`
-  width: ${({ size }) => size}px;
-  height: ${({ size }) => size}px;
+const MazeInnerWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,7 +92,7 @@ const MazePage: React.FC = () => {
         {maze && mazeSize && (
           <>
             <MazeOuterWrapper>
-              <MazeInnerWrapper size={mazeRenderSize}>
+              <MazeInnerWrapper>
                 <MazeRenderer
                   maze={maze}
                   width={mazeSize.width}
