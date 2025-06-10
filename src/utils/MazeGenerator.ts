@@ -4,10 +4,6 @@ export type MazeCell = 0 | 1 | 2 | 3; // 0 for path, 1 for wall, 2 for start, 3 
 // // Parameters:
 // - width: Width of the maze
 // - height: Height of the maze
-// - startX: X-coordinate of the starting point
-// - startY: Y-coordinate of the starting point
-// - goalX: X-coordinate of the goal point
-// - goalY: Y-coordinate of the goal point
 // The goal and start points are set to 0 (path) in the maze, while walls are represented by 1.
 // All the 4 edge lines (top, bottom, left, right) of the maze are walls (1) except for the start and goal points.
 export const generateMaze = (width: number, height: number): { maze: MazeCell[][], width: number, height: number } => {
