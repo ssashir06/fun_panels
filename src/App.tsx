@@ -11,10 +11,10 @@ import ClockPage from '~/pages/ClockPage';
 import ColorShapesPage from '~/pages/ColorShapesPage';
 import HomePage from '~/pages/HomePage';
 import KanaPage from '~/pages/KanaPage';
-import UserPage from '~/pages/UserPage';
 import MazePage from '~/pages/MazePage';
+import UserPage from '~/pages/UserPage';
 
-const baseUrl = viteEnv.BASE_URL;
+const baseUrl = viteEnv.BASE_URL.endsWith('/') ? viteEnv.BASE_URL : viteEnv.BASE_URL + '/';
 
 const Container = styled.div`
   display: flex;
