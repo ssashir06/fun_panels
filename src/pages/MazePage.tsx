@@ -45,6 +45,7 @@ const MazePage: React.FC = () => {
   const [mazeSize, setMazeSize] = useState<{ width: number; height: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [mazeRenderSize, setMazeRenderSize] = useState<number>(0);
+  const mazePrintRef = useRef<(() => void) | null>(null);
 
   const handleGenerateMaze = (size: 'simple' | 'difficult') => {
     const width = size === 'simple' ? 30 : 80;
@@ -57,6 +58,12 @@ const MazePage: React.FC = () => {
   const handleClearMaze = () => {
     setMaze(null);
     setMazeSize(null);
+  };
+  
+  const handlePrintMaze = () => {
+    if (mazePrintRef.current) {
+      mazePrintRef.current();
+    }
   };
 
   useLayoutEffect(() => {
@@ -93,10 +100,14 @@ const MazePage: React.FC = () => {
                   width={mazeSize.width}
                   height={mazeSize.height}
                   containerSize={mazeRenderSize}
+                  onPrintRef={mazePrintRef}
                 />
               </MazeInnerWrapper>
             </MazeOuterWrapper>
-            <Button onClick={handleClearMaze}>Clear</Button>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+              <Button onClick={handleClearMaze}>Clear</Button>
+              <Button onClick={handlePrintMaze}>Print</Button>
+            </div>
           </>
         )}
       </Container>

@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 
 import { MazeCell } from '~/utils/MazeGenerator';
 
@@ -7,6 +7,7 @@ interface MazeRendererProps {
   width: number;
   height: number;
   containerSize: number;
+  onPrintRef?: React.MutableRefObject<(() => void) | null>;
 }
 
 const textureMap: Record<number, { x: number; y: number }> = {
@@ -85,6 +86,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
   maze,
   width,
   height,
+  onPrintRef,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textureRef = useRef<HTMLImageElement | null>(null);
@@ -152,7 +154,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
   };
 
   // Print handler
-  const handlePrint = () => {
+  const handlePrint = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const dataUrl = canvas.toDataURL('image/png');
@@ -200,7 +202,17 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
       </html>
     `);
     win.document.close();
-  };
+  }, []);
+
+  // Expose handlePrint to parent via ref
+  useEffect(() => {
+    if (onPrintRef) {
+      onPrintRef.current = handlePrint;
+      return () => {
+        onPrintRef.current = null;
+      };
+    }
+  }, [onPrintRef, handlePrint]);
 
   const textureSrc = TEXTURES.sort(() => Math.random() - 0.5)[0];
 
@@ -230,7 +242,6 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
         onLoad={handleTextureLoad}
         id={useId()}
       />
-      <button onClick={handlePrint} style={{ marginTop: 8 }}>Print</button>
     </div>
   );
 };
