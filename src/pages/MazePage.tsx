@@ -45,14 +45,14 @@ const MazePage: React.FC = () => {
   const [mazeRenderSize, setMazeRenderSize] = useState<number>(0);
   const mazePrintRef = useRef<(() => void) | null>(null);
 
-  const handleGenerateMaze = (size: 'easy' | 'simple' | 'difficult') => {
+  const handleGenerateMaze = (difficulty: 'easy' | 'simple' | 'difficult') => {
     const sizeMap: Record<string, { width: number; height: number }> = {
       easy: { width: 20, height: 15 },
       simple: { width: 30, height: 20 },
       difficult: { width: 80, height: 70 }
     };
-    const width = sizeMap[size].width;
-    const height = sizeMap[size].height;
+    const width = sizeMap[difficulty].width;
+    const height = sizeMap[difficulty].height;
     const newMaze = generateMaze(width, height);
     setMaze(newMaze.maze);
     setMazeSize({ width: newMaze.width, height: newMaze.height });
