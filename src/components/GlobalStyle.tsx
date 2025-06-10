@@ -12,6 +12,11 @@ const GlobalStyle = createGlobalStyle`
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE 10+/Edge */
     user-select: none; /* Standard syntax */
+
+    // Prevent scrolling by swipe on touch screens
+    overscroll-behavior: none;
+    touch-action: none;
+    overflow: hidden;
   }
 `;
 
