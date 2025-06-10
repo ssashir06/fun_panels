@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 
 import { MazeCell } from '~/utils/MazeGenerator';
 
@@ -37,6 +37,50 @@ const TEXTURES = [
   '/maze%20texture%204.png',
 ];
 
+// Helper to check if a cell is a wall (1)
+const isWall = (maze: MazeCell[][], y: number, x: number) =>
+  maze[y] && maze[y][x] === 1;
+
+// Partition logic as described
+const getPartition = (
+  maze: MazeCell[][],
+  y: number,
+  x: number,
+  quadrant: 'ul' | 'ur' | 'bl' | 'br'
+) => {
+  const up = isWall(maze, y - 1, x);
+  const left = isWall(maze, y, x - 1);
+  const right = isWall(maze, y, x + 1);
+  const down = isWall(maze, y + 1, x);
+
+  switch (quadrant) {
+    case 'ul':
+      if (!left && !up) return 13;
+      if (left && up) return 1;
+      if (left) return 4;
+      if (up) return 2;
+      return 5;
+    case 'ur':
+      if (!right && !up) return 12;
+      if (right && up) return 3;
+      if (right) return 6;
+      if (up) return 2;
+      return 5;
+    case 'bl':
+      if (!left && !down) return 11;
+      if (left && down) return 7;
+      if (left) return 4;
+      if (down) return 8;
+      return 5;
+    case 'br':
+      if (!right && !down) return 10;
+      if (right && down) return 9;
+      if (right) return 6;
+      if (down) return 8;
+      return 5;
+  }
+};
+
 const MazeRenderer: React.FC<MazeRendererProps> = ({
   maze,
   width,
@@ -45,49 +89,6 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textureRef = useRef<HTMLImageElement | null>(null);
   const [textureLoaded, setTextureLoaded] = useState(false);
-
-  // Helper to check if a cell is a wall (1)
-  const isWall = (y: number, x: number) =>
-    maze[y] && maze[y][x] === 1;
-
-  // Partition logic as described
-  const getPartition = (
-    y: number,
-    x: number,
-    quadrant: 'ul' | 'ur' | 'bl' | 'br'
-  ) => {
-    const up = isWall(y - 1, x);
-    const left = isWall(y, x - 1);
-    const right = isWall(y, x + 1);
-    const down = isWall(y + 1, x);
-
-    switch (quadrant) {
-      case 'ul':
-        if (!left && !up) return 13;
-        if (left && up) return 1;
-        if (left) return 4;
-        if (up) return 2;
-        return 5;
-      case 'ur':
-        if (!right && !up) return 12;
-        if (right && up) return 3;
-        if (right) return 6;
-        if (up) return 2;
-        return 5;
-      case 'bl':
-        if (!left && !down) return 11;
-        if (left && down) return 7;
-        if (left) return 4;
-        if (down) return 8;
-        return 5;
-      case 'br':
-        if (!right && !down) return 10;
-        if (right && down) return 9;
-        if (right) return 6;
-        if (down) return 8;
-        return 5;
-    }
-  };
 
   // Draw maze on canvas
   useEffect(() => {
@@ -115,6 +116,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
     const texture = textureRef.current;
     if (!texture?.complete) {
       // Will re-render on image load
+      setTextureLoaded(false);
       return;
     }
 
@@ -124,7 +126,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
         const py = offsetY + ((y - 1) / 2) * cellSize;
         const half = cellSize / 2;
         (['ul', 'ur', 'bl', 'br'] as const).forEach((q, i) => {
-          const partition = getPartition(y, x, q);
+          const partition = getPartition(maze, y, x, q);
           const { x: tx, y: ty } = textureMap[partition];
           // Source rect in texture
           const sx = tx * PART_SIZE;
@@ -142,7 +144,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
         });
       }
     }
-  }, [maze, width, height, textureLoaded]);
+  }, [textureLoaded, width, height, maze]);
 
   // Redraw on texture load
   const handleTextureLoad = () => {
@@ -225,7 +227,8 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
         src={textureSrc}
         alt="maze texture"
         style={{ display: 'none' }}
-        onLoad={() => setTimeout(handleTextureLoad, 500)}
+        onLoad={handleTextureLoad}
+        id={useId()}
       />
       <button onClick={handlePrint} style={{ marginTop: 8 }}>Print</button>
     </div>
