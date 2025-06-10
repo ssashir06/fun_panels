@@ -217,7 +217,7 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
     }
   }, [onPrintRef, handlePrint]);
 
-  const textureSrc = TEXTURES.sort(() => Math.random() - 0.5)[0];
+  const textureSrc = [...TEXTURES].sort(() => Math.random() - 0.5)[0];
 
   return (
     <div style={{ width: '100%', height: '100%', maxWidth: '100vw', maxHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
