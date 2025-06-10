@@ -221,8 +221,8 @@ const MazeRenderer: React.FC<MazeRendererProps> = ({
       <div style={{ width: '100%', maxWidth: 1024, aspectRatio: '4/3' }}>
         <canvas
           ref={canvasRef}
-          width={1024}
-          height={768}
+          width={CANVAS_WIDTH}
+          height={CANVAS_HEIGHT}
           style={{
             width: '100%',
             height: 'auto',
